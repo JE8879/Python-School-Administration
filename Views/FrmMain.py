@@ -3,6 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from Views.FrmUser import ManageUser
 from Views.FrmStudent import ViewStudent
 from Views.FrmSemester import ViewSemester
+from Views.FrmProfession import ViewProfession
+from Views.FrmPayment import ViewPayment
 
 class MainForm(QtWidgets.QWidget):
     # Constructor
@@ -12,25 +14,23 @@ class MainForm(QtWidgets.QWidget):
 
         # Load Template-UI-File
         uic.loadUi('Views/Templates/MainForm.ui',self)
+        self.setStyleSheet("background-color: rgb(46, 64, 83);")
         # self.setStyleSheet("background-color: white;")
 
         # Load Styles CSS
         with open('./Assets/MainFormStyles.css') as fileCss:
             self.mainFormStyles = fileCss.read()
-
+            
         self.CenterWindow()
 
-        self.menuPanel = self.findChild(QtWidgets.QFrame, 'MenuPanel')
-        self.menuPanel.setStyleSheet(self.mainFormStyles)
+        self.menuLateral = self.findChild(QtWidgets.QFrame, 'menuLateral')
+        self.menuLateral.setStyleSheet(self.mainFormStyles)
 
-        # ToolButtons
-        self.BtnProfile = self.findChild(QtWidgets.QToolButton, 'BtnProfile')
-        self.BtnProfile.setStyleSheet(self.mainFormStyles)
+        self.BtnMenu = self.findChild(QtWidgets.QPushButton, 'BtnMenu')
+        self.BtnMenu.clicked.connect(self.OpenAdminSubMenu)
+        self.BtnMenu.setToolTip('Menu')
 
-        # Buttons
-        self.BtnAdministration = self.findChild(QtWidgets.QPushButton, 'BtnAdmin')
-        self.BtnAdministration.setStyleSheet(self.mainFormStyles)
-        self.BtnAdministration.clicked.connect(self.OpenAdminSubMenu)
+        self.isShow = True
 
         self.BtnProfessor = self.findChild(QtWidgets.QPushButton, 'BtnProfessor')
         self.BtnProfessor.setStyleSheet(self.mainFormStyles)
@@ -41,16 +41,23 @@ class MainForm(QtWidgets.QWidget):
 
         self.BtnUser = self.findChild(QtWidgets.QPushButton, 'BtnUserLogs')
         self.BtnUser.clicked.connect(self.OpenMageUser)
+        self.BtnUser.setToolTip('Edit Users')
         
         self.BtnStudent = self.findChild(QtWidgets.QPushButton, 'BtnStudents')
         self.BtnStudent.clicked.connect(self.OpenStudent)
+        self.BtnStudent.setToolTip('Edit Students and Semester Students')
 
-        self.BtnSubject = self.findChild(QtWidgets.QPushButton, 'BtnSubjects')
-        self.BtnSubject.clicked.connect(self.OpenSemester)
+        self.BtnSemesters = self.findChild(QtWidgets.QPushButton, 'BtnSemesters')
+        self.BtnSemesters.clicked.connect(self.OpenSemester)
+        self.BtnSemesters.setToolTip('Edit Semesters')
 
-        self.Profession = self.findChild(QtWidgets.QPushButton, 'BtnProfessions')
+        self.BtnProfession = self.findChild(QtWidgets.QPushButton, 'BtnProfessions')
+        self.BtnProfession.clicked.connect(self.OpenProfessionSubject)
+        self.BtnProfession.setToolTip('Edit Professions')
 
         self.BtnPay = self.findChild(QtWidgets.QPushButton, 'BtnPayMents')
+        self.BtnPay.clicked.connect(self.OpenPayment)
+        self.BtnPay.setToolTip('Register PayMents')
 
         self.mdiArea = self.findChild(QtWidgets.QMdiArea, 'mdiArea')
 
@@ -78,23 +85,25 @@ class MainForm(QtWidgets.QWidget):
     
     def CustomDesign(self,panelSubMenu):
         panelSubMenu.hide()
-        self.BtnProfessor.setGeometry(QtCore.QRect(0, 200, 231, 31))
+        self.BtnProfessor.setGeometry(QtCore.QRect(0, 140, 64, 50))
 
     def OpenAdminSubMenu(self):
         if(self.panelAdmin.isVisible() == False):
             self.panelAdmin.show()
             self.panelProfessor.hide()
-            self.BtnProfessor.setGeometry(QtCore.QRect(0, 390, 231, 31))            
+            self.BtnProfessor.setGeometry(QtCore.QRect(0, 390, 64, 50))            
         else:
+            self.mdiArea.closeAllSubWindows()
             self.panelAdmin.hide()
-            self.BtnProfessor.setGeometry(QtCore.QRect(0, 200, 231, 31))
+            self.BtnProfessor.setGeometry(QtCore.QRect(0, 140, 64, 50))
          
     def OpenProfessorSubMenu(self):
         if(self.panelProfessor.isVisible() == False):
             self.panelProfessor.show()
-            self.panelAdmin.hide()  
-            self.BtnProfessor.setGeometry(QtCore.QRect(0, 200, 231, 31))
-            self.panelProfessor.setGeometry(QtCore.QRect(-10, 240, 241, 121))                                  
+            self.panelAdmin.hide()
+            self.mdiArea.closeAllSubWindows()
+            self.BtnProfessor.setGeometry(QtCore.QRect(0, 140, 64, 50))
+            self.panelProfessor.setGeometry(QtCore.QRect(0, 190, 241, 155))                                  
         else:
             self.panelProfessor.hide()
 
@@ -112,6 +121,17 @@ class MainForm(QtWidgets.QWidget):
         self.instanceSemester = ViewSemester()
         self.frmSemesterSubWindow = QtWidgets.QMdiSubWindow()
         self.OpenChildForm(self.instanceSemester, self.frmSemesterSubWindow)
+
+    def OpenProfessionSubject(self):
+        self.instanceProfession = ViewProfession()
+        self.frmProfessionSubWindow = QtWidgets.QMdiSubWindow()
+        self.OpenChildForm(self.instanceProfession, self.frmProfessionSubWindow)
+        
+    def OpenPayment(self):
+        self.instancePaymeent = ViewPayment()
+        self.frmPaymentSubWindow = QtWidgets.QMdiSubWindow()
+        self.OpenChildForm(self.instancePaymeent, self.frmPaymentSubWindow)
+
 
 if __name__ == '__main__':
 

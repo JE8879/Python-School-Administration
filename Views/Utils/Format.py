@@ -57,6 +57,7 @@ class FormatComponents:
         
         QTableWidget.horizontalHeader().setStyleSheet(self.globalStyles)
         QTableWidget.horizontalHeader().setFont(self.fontQLabel)
+
         QTableWidget.verticalHeader().hide()
         QTableWidget.setShowGrid(False)
 
@@ -64,14 +65,22 @@ class FormatComponents:
         if(typeData == 1):
             for row in range(numRows):
                 for column in range(numCols):
-                    QTableWidget.setItem(row,column,QtWidgets.QTableWidgetItem(str(lstData[row][column])))
+                    # QTableWidget.setItem(row,column,QtWidgets.QTableWidgetItem(str(lstData[row][column])))
+
+                    newRow = QtWidgets.QTableWidgetItem(str(lstData[row][column]))
+                    # newRow.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                    # newRow.setCheckState(QtCore.Qt.Unchecked)
+
+                    QTableWidget.setItem(row,column, newRow)
                     QTableWidget.item(row,column).setFont(self.fontQLineEdit)
                     QTableWidget.horizontalHeader().setSectionResizeMode(column,QtWidgets.QHeaderView.ResizeToContents)
-
+                    
                     if(row %2 == 0):
-                            QTableWidget.item(row,column).setBackground(QtGui.QColor(33, 47, 61))
+                        QTableWidget.item(row,column).setBackground(QtGui.QColor(33, 47, 61))
                     else:
-                            QTableWidget.item(row,column).setBackground(QtGui.QColor(44, 62, 80))
+                        QTableWidget.item(row,column).setBackground(QtGui.QColor(44, 62, 80))
+            
+            QTableWidget.clearSelection()
 
         if(typeData == 2):
             for row, item_list in enumerate(lstData):
@@ -80,14 +89,8 @@ class FormatComponents:
                     QTableWidget.setItem(row, col, newItem)
                     QTableWidget.item(row,col).setFont(self.fontQLineEdit)
                     QTableWidget.horizontalHeader().setSectionResizeMode(col,QtWidgets.QHeaderView.ResizeToContents)
-
-    def ShowMessage(self, title, message):
-        self.messageBox = QtWidgets.QMessageBox()
-        self.messageBox.setIcon(QtWidgets.QMessageBox.Information)
-        self.messageBox.setText(message)
-        self.messageBox.setWindowTitle(title)
-        self.messageBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        self.messageBox.show()
+            
+            QTableWidget.clearSelection()
     
     def ShowMessageLabel(self, QLabel, message, typeMessage):
         if(typeMessage == 'error'):
@@ -101,8 +104,6 @@ class FormatComponents:
             QLabel.setText(message)
             QLabel.setStyleSheet(self.styleSuccesfull)
             QtCore.QTimer.singleShot(3000, QLabel.hide)
-
-
 
 class Delegate(QStyledItemDelegate):
     #Constructor

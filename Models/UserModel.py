@@ -5,7 +5,7 @@ class UserModel(Connection):
 
     def Add(self,parameters):
         try:
-            sQuery = "INSERT INTO UserData (firstname,lastname,gender,age,phone,email,positionid) VALUES(%s,%s,%s,%s,%s,%s,%s)"
+            sQuery = "INSERT INTO UserData (firstname,lastname,address,gender,email,phone,birthday,positionid) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record inserted successfully"
         except (Exception, psycopg2.Error) as err:
@@ -14,7 +14,7 @@ class UserModel(Connection):
 
     def Update(self,parameters):
         try:
-            sQuery = "UPDATE UserData SET firstname=%s, lastname=%s, gender=%s, age=%s, phone=%s, email=%s, positionid=%s WHERE UserID=%s"
+            sQuery = "UPDATE UserData SET firstname=%s, lastname=%s, address=%s, gender=%s, email=%s, phone=%s, birthday=%s, positionid=%s WHERE UserID=%s"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record updated succesfully"
         except (Exception, psycopg2.Error) as err:
@@ -30,7 +30,7 @@ class UserModel(Connection):
             result = err
         return result
 
-    def GetBasicInfoUser(self):
+    def GetAll(self):
         try:           
             sQuery = "SELECT * FROM UserData ORDER BY userid ASC"
             result = self.ExecuteReader(sQuery)
@@ -38,30 +38,49 @@ class UserModel(Connection):
             result = err
         return result
 
-    def GetCustomData(self, key, value):
-        lstValues = self.GetBasicInfoUser()
-
+    def SearchLike(self, key, value):
+        keys = ['ID', 'fname', 'lname', 'address', 'gender', 'email', 'phone', 'birthday', 'positionid']
+        lstValues = []
         dictionaryList = []
-        for item in lstValues:
-            # Create new Dictionary
-            newDictionary = {'ID':str(item[0]),'fname':item[1],
-                    'lname':item[2],'gender':item[3],
-                    'age':item[4],'phone':item[5],
-                    'email':item[6], 'positionId':str(item[7])}
-            # Add the dictionary to the list
-            dictionaryList.append(newDictionary)
-        # Create new list auxiliar
         auxiliaryList = []
-        try:
-            for element in dictionaryList:
-                if(element[key] == value):
-                    auxiliaryList.append(element)
-        except:
-            return
-        return auxiliaryList
+
+        if(len(lstValues)) > 0:
+            print('Desde los valores')
+            # Crea una lista de diccionarios
+            dictionaryList = [dict(zip(keys, item)) for item in lstValues]
+
+            try:
+                auxiliaryList = [element for element in dictionaryList if element[key] == value]
+            except:
+                return
+            return auxiliaryList
+        else:
+            lstValues = self.GetAll()
+            print('Desde la Base de Datos')
+            # Crea una lista de diccionarios
+            dictionaryList = [dict(zip(keys, item)) for item in lstValues]
+
+            try:
+                auxiliaryList = [element for element in dictionaryList if element[key] == value]
+            except:
+                return
+            return auxiliaryList
+            
+
+
+    def CustomSearch(self, key, value, update=None):
+        keys = ['ID', 'fname', 'lname', 'address', 'gender', 'email', 'phone', 'birthday', 'positionid']
+
+        lstValues = []
+
+        if(lstValues):
+            print(lstValues)
+        else:
+            lstValues = self.GetAll()
+
 
 # if __name__ == '__main__':
 #     testQuery = UserModel()
-#     result = testQuery.GetCustomData('ID','1')
+#     result = testQuery.SearchLike('ID',1)
 #     for item in result:
 #         print(item)

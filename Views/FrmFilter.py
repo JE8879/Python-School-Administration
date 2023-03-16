@@ -12,9 +12,9 @@ sys.path.append(PROJECT_ROOT)
 
 class ViewFilter(QtWidgets.QWidget):
     #Constructor
-    def __init__(self):
-
-        #Find components and set properties
+    def __init__(self, dicParameters):
+        # Find components and set properties
+        self.dicParameters = dicParameters
         super(ViewFilter, self).__init__()
 
         #Load UI-File
@@ -57,19 +57,19 @@ class ViewFilter(QtWidgets.QWidget):
         self.columnParen = QtWidgets.QTreeWidgetItem(self.treeWidgetParent)
         self.columnParen.setText(0,"Select")
 
-        for key, value in self.dictHeaderUser.items():
+        for key, value in self.dicParameters.items():
             childItem = QtWidgets.QTreeWidgetItem(self.columnParen)
             childItem.setFlags(childItem.flags() | Qt.ItemIsUserCheckable)
             childItem.setText(0, value)
             childItem.setCheckState(0, Qt.Unchecked)
 
-    def LoadEvents(self):
+    def RetrieveSelectedChoices(self):
         for item in range(self.columnParen.childCount()):
             if(self.columnParen.child(item).checkState(0)):
                 # Get the element text
                 textElement = self.columnParen.child(item).text(0)
                 # Search value and get key
-                for key, value in self.dictHeaderUser.items():
+                for key, value in self.dicParameters.items():
                     if(value == textElement):
                         result = key
         return result

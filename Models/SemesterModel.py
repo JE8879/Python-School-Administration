@@ -6,7 +6,7 @@ class SemesterModel(Connection):
 
     def Add(self, parameters):
         try:
-            sQuery = "INSERT INTO Semester(semestername,schoolyear,timestart,timeend,professionid) VALUES(%s,%s,%s,%s,%s)"
+            sQuery = "INSERT INTO Semester(semestername,schoolyear,timestart,timeend,status,professionid) VALUES(%s,%s,%s,%s,%s,%s)"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record inserted successfully"
         except(Exception, psycopg2.Error) as err:
@@ -15,7 +15,7 @@ class SemesterModel(Connection):
 
     def Update(self, parameters):
         try:
-            sQuery = "UPDATE Semester SET semestername=%s, schoolyear=%s, timestart=%s, timeend=%s, professionid=% WHERE semesterid=%s"
+            sQuery = "UPDATE Semester SET semestername=%s, schoolyear=%s, timestart=%s, timeend=%s, status=%s ,professionid=% WHERE semesterid=%s"
             self.ExecuteReader(sQuery, parameters)
             result = "Record updated succesfully"
         except(Exception, psycopg2.Error) as err:

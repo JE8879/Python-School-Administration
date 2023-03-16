@@ -5,7 +5,7 @@ class StudentModel(Connection):
 
     def Add(self,parameters):
         try:
-            sQuery = "INSERT INTO Student(userid,semesterid,studyshift,active) VALUES(%s,%s,%s,%s)"
+            sQuery = "INSERT INTO Student(userid,schoolenrollment,studyshift,active) VALUES(%s,%s,%s,%s)"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record inserted successfully"        
         except(Exception, psycopg2.Error) as err:
@@ -14,7 +14,7 @@ class StudentModel(Connection):
 
     def Update(self,parameters):
         try:
-            sQuery = "UPDATE Student SET semesterid=%s, studyshift=%s, active=%s WHERE studentid=%s"
+            sQuery = "UPDATE Student SET studyshift=%s, active=%s WHERE userid=%s"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record updated succesfully"
         except(Exception, psycopg2.Error) as err:
@@ -27,20 +27,16 @@ class StudentModel(Connection):
             self.ExecuteQuery(sQuery,(ID,))
             result = "Record deleted succesfully"
         except(Exception, psycopg2.Error) as err:
-            result = str(result)
+            result = str(err)
         return result
 
     def GetAll(self):
         try:
-            sQuery = """SELECT StudentID, FirstName || ' ' || LastName  as FullName, Semester.SemesterID || ' - ' ||  SemesterName || ' - ' || ProfessionName  AS SemesterProfession, StudyShift, Active
-            FROM Student
-            INNER JOIN UserData ON Student.UserID = UserData.UserID
-            INNER JOIN Semester ON Student.SemesterId = Semester.SemesterID
-            INNER JOIN Profession ON Semester.ProfessionID = Profession.ProfessionID
-            WHERE Active='Active'
-            ORDER BY StudentID ASC;
-            """
-            
+            sQuery = """SELECT Student.userid, UserData.firstname || ' ' || UserData.lastname as FullName, Student.Schoolenrollment, Student.studyshift, Student.active
+                        FROM Student
+                        INNER JOIN UserData ON Userdata.userid = Student.userid
+                        WHERE Student.Active = 'Active'
+                        ORDER BY Student.userid;"""    
             result = self.ExecuteReader(sQuery)
         except(Exception, psycopg2.Error) as err:
             result = str(err)
@@ -48,7 +44,12 @@ class StudentModel(Connection):
     
     def GetStudents(self):
         try:
-            sQuery = "SELECT UserID, Firstname || ' ' || LastName AS FullName From UserData WHERE PositionID = 3;"
+            sQuery = """
+                SELECT UserData.UserID, UserData.Firstname || ' ' || UserData.LastName as FullName
+                FROM UserData
+                LEFT JOIN Student ON Student.UserId = Userdata.UserId
+                WHERE Student.UserId IS NULL AND UserData.PositionId=2;
+                """
             result = self.ExecuteReader(sQuery)
         except(Exception, psycopg2.Error) as err:
             result = str(err)
@@ -58,23 +59,25 @@ class StudentModel(Connection):
         try:
             sQuery = """SELECT SemesterID, SemesterName || ' - ' || ProfessionName AS Semester, SchoolYear
                         FROM Semester
-                        INNER JOIN Profession ON Semester.ProfessionID = Profession.ProfessionID
-                        WHERE SchoolYear = DATE_PART('YEAR',CURRENT_DATE);
+                        INNER JOIN Profession ON Semester.ProfessionID = Profession.ProfessionID;
                     """
             result = self.ExecuteReader(sQuery)
         except(Exception, psycopg2.Error) as err:
             result = str(err)
         return result
 
-    def GetOnlyOneStuent(self, key, value):
-        lstValues = self.GetStudents()
+    def SearchLikeStudent(self, key, value):
+        # crate keys, the field null is the enrollment but i don´t use that field then i ignore
+        # The field null is not inside of list of parameters to search
+        keys = ['ID','fullname','null','studyShift','active']
+        lstValues = self.GetAll()
 
         dictionaryList = []
+
         for item in lstValues:
-            newDictionary = {'ID':str(item[0]), 'fullname':item[1]}
-            # Add the dictionary to the list
+            newDictionary = dict(zip(keys,item))
             dictionaryList.append(newDictionary)
-        # Create new list auxiliar
+
         auxiliaryList = []
         try:
             for element in dictionaryList:
@@ -84,9 +87,9 @@ class StudentModel(Connection):
             return
         return auxiliaryList
 
-
-
 # if __name__ == '__main__':
 #     objectStudent = StudentModel()
-#     message = objectStudent.GetOnlyOneStuent('ID','1')
-#     print(message)
+#     result = objectStudent.GetSemesters()
+#     print(result)
+
+    

@@ -52,6 +52,7 @@ class FrmLogin(QtWidgets.QWidget):
     def OpenDashBoard(self):
         self.uiWindow = QtWidgets.QWidget()
         self.instanceWindow = MainForm()
+        
 
 if __name__ == '__main__':
 

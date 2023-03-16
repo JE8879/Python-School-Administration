@@ -74,7 +74,8 @@ class GenericForm(QtWidgets.QWidget):
             case "Students":
                 self.setWindowTitle("Students")
                 self.textSearch.setPlaceholderText("Search By Student ID")
-                self.textSearch.textChanged.connect(self.LoadStudents)
+                # self.textSearch.textChanged.connect(self.LoadStudents)
+                self.LoadStudents()
 
             case "Semesters":
                 self.setWindowTitle("Semesters")
@@ -83,15 +84,20 @@ class GenericForm(QtWidgets.QWidget):
             case "Professions":
                 self.setWindowTitle("Professions")
                 self.LoadProfessions()
+            
+            case "Payments":
+                self.textSearch.hide()
+                self.setWindowTitle("Payments")
+                self.LoadPaymentTable()
 
-    def LoadPositions(self):        
+    def LoadPositions(self):
         lstHeaderLabels = ('Position ID', 'Position Name')
         self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instancePosition.GetPositions(), lstHeaderLabels, 1)
 
     def LoadStudents(self):
         lstHeaderLabels = ('ID', 'Full Name')
-        result = self.instanceStudent.GetOnlyOneStuent('ID',self.textSearch.text())
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, result, lstHeaderLabels, 2)
+        # result = self.instanceStudent.GetOnlyOneStuent('ID',self.textSearch.text())
+        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceStudent.GetStudents(), lstHeaderLabels, 1)
 
     def LoadSemesters(self):
         lstHeaderLabels = ('ID', 'Semester Name', 'School Year')
@@ -101,12 +107,28 @@ class GenericForm(QtWidgets.QWidget):
         lstHeaderLabels = ('ID', 'Profession Name')
         self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceProfession.GetAll(), lstHeaderLabels, 1)
 
+    def LoadPaymentTable(self):
+        lstHeaderLabels = ('Concept Name', 'Amount')
+        lstPaymentData = [('Monthly Payment',1000),('Enrollment Payment',3000)]
+
+        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, lstPaymentData, lstHeaderLabels, 1)
+
     def RetrieveData(self):
         row = self.GenericTable.currentRow()
         if(row >= 0):
             self.result = self.GenericTable.item(row,0).text()
             self.result+= ' ' + self.GenericTable.item(row,1).text()
         return self.result
+
+    def LoadCheckStatus(self):
+        
+        for row in range(self.GenericTable.rowCount()):
+             
+            checkbox = QtWidgets.QCheckBox()
+            checkbox.setCheckState(False)
+
+            # set the checkbox widget as the cell widget for the first column of the row
+            self.GenericTable.setCellWidget(row, 0, checkbox)
 
 if __name__ == '__main__':
 

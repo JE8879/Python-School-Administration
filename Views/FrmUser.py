@@ -56,22 +56,25 @@ class ManageUser(QtWidgets.QWidget):
         self.textLastName.setStyleSheet(self.globalStyles)
         self.textLastName.setFont(self.fontQLineEdit)
 
+        self.textAddress = self.findChild(QtWidgets.QLineEdit, 'textAddress')
+        self.textAddress.setStyleSheet(self.globalStyles)
+        self.textAddress.setFont(self.fontQLineEdit)
+
         self.CboGender = self.findChild(QtWidgets.QComboBox, 'CboGender')
         self.CboGender.setStyleSheet(self.globalStyles)
         self.CboGender.setFont(self.fontQLineEdit)
 
-        self.textAge = self.findChild(QtWidgets.QLineEdit, 'textAge')
-        self.textAge.setStyleSheet(self.globalStyles)
-        self.textAge.setFont(self.fontQLineEdit)
-        self.textAge.setValidator(self.OnlyInteger)
+        self.textEmail = self.findChild(QtWidgets.QLineEdit, 'textEmail')
+        self.textEmail.setStyleSheet(self.globalStyles)
+        self.textEmail.setFont(self.fontQLineEdit)
 
         self.textPhone = self.findChild(QtWidgets.QLineEdit, 'textPhone')
         self.textPhone.setStyleSheet(self.globalStyles)
         self.textPhone.setFont(self.fontQLineEdit)
 
-        self.textEmail = self.findChild(QtWidgets.QLineEdit, 'textEmail')
-        self.textEmail.setStyleSheet(self.globalStyles)
-        self.textEmail.setFont(self.fontQLineEdit)
+        self.dateBirthDay = self.findChild(QtWidgets.QDateEdit, 'dateBirthDay')
+        self.dateBirthDay.setFont(self.fontQLineEdit)
+        self.dateBirthDay.setStyleSheet(self.globalStyles)
 
         self.textSearch = self.findChild(QtWidgets.QLineEdit, 'textSearch')
         self.textSearch.setStyleSheet(self.globalStyles)
@@ -120,7 +123,7 @@ class ManageUser(QtWidgets.QWidget):
         self.instanceFormat = FormatComponents()
         self.instanceUserModel = UserModel()
 
-        self.lstHeaderLabels = ('User ID', 'First Name', 'Last Name', 'Gender', 'Age', 'Phone', 'Email', 'Position ID')
+        self.lstHeaderLabels = ('User ID', 'First Name', 'Last Name', 'Address', 'Gender', 'Email', 'Phone', 'BirthDay', 'Position ID')
 
         self.fieldValue = ''
 
@@ -129,11 +132,11 @@ class ManageUser(QtWidgets.QWidget):
         self.Load()
         
     def Load(self):
-        self.instanceFormat.FormatQTableWidget(self.TableUserData, 8, self.instanceUserModel.GetBasicInfoUser(), self.lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.TableUserData, 9, self.instanceUserModel.GetAll(), self.lstHeaderLabels, 1)
 
     def SaveUser(self):
         # Get Data from QLineEdtits
-        self.DataUser = self.textFirstName.text(), self.textLastName.text(), self.CboGender.currentText(), self.textAge.text(), self.textPhone.text(), self.textEmail.text(), self.LblPosition.text()[0:2]
+        self.DataUser = self.textFirstName.text(), self.textLastName.text(), self.textAddress.text(), self.CboGender.currentText(), self.textEmail.text(),  self.textPhone.text(), self.dateBirthDay.dateTime().toString('yyyy-MM-dd'), self.LblPosition.text()[0:2]
 
         # Create new list
         self.lstUser = list(self.DataUser)
@@ -179,11 +182,15 @@ class ManageUser(QtWidgets.QWidget):
             self.isUpdate = True
             self.textFirstName.setText(self.TableUserData.item(row,1).text())
             self.textLastName.setText(self.TableUserData.item(row,2).text())
-            self.CboGender.setEditText(self.TableUserData.item(row,3).text())
-            self.textAge.setText(self.TableUserData.item(row,4).text())
-            self.textPhone.setText(self.TableUserData.item(row,5).text())
-            self.textEmail.setText(self.TableUserData.item(row,6).text())
-            self.LblPosition.setText(self.TableUserData.item(row,7).text())
+            self.textAddress.setText(self.TableUserData.item(row,3).text())
+            self.CboGender.setEditText(self.TableUserData.item(row,4).text())
+            self.textEmail.setText(self.TableUserData.item(row,5).text())
+            self.textPhone.setText(self.TableUserData.item(row,6).text())
+            # Convert date to String
+            birthDay = QtCore.QDate.fromString(self.TableUserData.item(row,7).text(),'yyyy-MM-dd')
+
+            self.dateBirthDay.setDate(birthDay)                        
+            self.LblPosition.setText(self.TableUserData.item(row,8).text())
         else:
             self.instanceFormat.ShowMessageLabel(self.LblMessage, 'Select a record to update', 'error')
 
@@ -204,7 +211,7 @@ class ManageUser(QtWidgets.QWidget):
     def ClearQLineEdits(self):
         self.textFirstName.clear()
         self.textLastName.clear()
-        self.textAge.clear()
+        self.textAddress.clear()
         self.textPhone.clear()
         self.textEmail.clear()
         self.LblPosition.setText('')
@@ -215,7 +222,7 @@ class ManageUser(QtWidgets.QWidget):
     def OpenPositions(self):
         self.positionWindow = GenericForm("Positions")
         self.positionWindow.BtnAcept.clicked.connect(self.GetSelectedPosition)
-        self.positionWindow.show()        
+        self.positionWindow.show()    
     
     def GetSelectedPosition(self):
         self.fieldValue = self.positionWindow.RetrieveData()
@@ -224,21 +231,35 @@ class ManageUser(QtWidgets.QWidget):
             self.positionWindow.close()
     
     def OpentFilters(self):
-        self.instanceFilter = ViewFilter()
+        # Create new dictionary with our choices
+        self.dictHeaderUser = {'fname':'First Name', 'lname':'Last Name','positionId':'Position'}
+        # Pass the dictionary to contructor
+        self.instanceFilter = ViewFilter(self.dictHeaderUser)
+        
         self.instanceFilter.BtnAcept.clicked.connect(self.GetElement)
         self.instanceFilter.show()
 
     def GetElement(self):
-        self.key = self.instanceFilter.LoadEvents()
+        self.key = self.instanceFilter.RetrieveSelectedChoices()
         self.instanceFilter.close()
 
     def ApplyFilters(self):
         # Get data from db
-        result = self.instanceUserModel.GetCustomData(self.key, self.textSearch.text())
 
-        self.instaceFormat.FormatQTableWidget(self.TableUsers, 8, result, self.lstHeaderLabels, 2)
-        # Reset Data
-        if(len(self.textSearch.text()) == 0):
+        try:
+            if(self.key == 'ID' or self.key == 'positionId'):
+                IdField = int(self.textSearch.text())
+                
+                result = self.instanceUserModel.SearchLike(self.key, IdField)
+                self.instanceFormat.FormatQTableWidget(self.TableUserData, 9, result, self.lstHeaderLabels, 2)
+            else:
+                result = self.instanceUserModel.SearchLike(self.key, self.textSearch.text())
+                self.instanceFormat.FormatQTableWidget(self.TableUserData, 9, result, self.lstHeaderLabels, 2)
+
+                # Reset Data
+                if(self.textSearch.text() == ''):
+                    self.Load()
+        except:
             self.Load()
 
     def ClearFilters(self):

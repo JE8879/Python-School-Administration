@@ -234,8 +234,11 @@ color: rgb(174, 182, 191);}</string>
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="0" column="5">
+           <widget class="QLineEdit" name="textAddress"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_9">
             <property name="font">
              <font>
               <family>Century Gothic</family>
@@ -245,12 +248,10 @@ color: rgb(174, 182, 191);}</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Position:</string>
+             <string>Address:</string>
             </property>
            </widget>
           </item>
@@ -265,36 +266,18 @@ color: rgb(174, 182, 191);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Email:</string>
+             <string>Phone</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="5">
-           <widget class="QLineEdit" name="textEmail"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="BtnPosition">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>22</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Select Position</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="textFirstName"/>
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="textLastName"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="textFirstName"/>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
@@ -307,9 +290,7 @@ color: rgb(174, 182, 191);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>First Name:</string>
@@ -327,32 +308,10 @@ color: rgb(174, 182, 191);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>Last Name:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QLabel" name="label_3">
-            <property name="font">
-             <font>
-              <family>Century Gothic</family>
-              <pointsize>11</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
-            </property>
-            <property name="text">
-             <string>Gender:</string>
             </property>
            </widget>
           </item>
@@ -367,27 +326,12 @@ color: rgb(174, 182, 191);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Age:</string>
+             <string>Gender:</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="5">
-           <widget class="QComboBox" name="CboGender">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>22</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="textAge"/>
           </item>
           <item row="1" column="2">
            <widget class="QLabel" name="label_5">
@@ -400,19 +344,30 @@ color: rgb(174, 182, 191);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel{
-color: rgb(174, 182, 191);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>Phone:</string>
+             <string>Email:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="CboGender">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>22</height>
+             </size>
             </property>
            </widget>
           </item>
           <item row="1" column="3">
+           <widget class="QLineEdit" name="textEmail"/>
+          </item>
+          <item row="1" column="5">
            <widget class="QLineEdit" name="textPhone"/>
           </item>
-          <item row="2" column="3">
+          <item row="2" column="5">
            <widget class="QLabel" name="LblPosition">
             <property name="styleSheet">
              <string notr="true">QLabel{
@@ -424,6 +379,62 @@ color: rgb(174, 182, 191);
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="BtnPosition">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Select Position</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <family>Century Gothic</family>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Position:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateEdit" name="dateBirthDay">
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="font">
+             <font>
+              <family>Century Gothic</family>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>BirthDay:</string>
             </property>
            </widget>
           </item>
@@ -466,6 +477,24 @@ color: rgb(174, 182, 191);
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>textFirstName</tabstop>
+  <tabstop>textLastName</tabstop>
+  <tabstop>textAddress</tabstop>
+  <tabstop>CboGender</tabstop>
+  <tabstop>textEmail</tabstop>
+  <tabstop>textPhone</tabstop>
+  <tabstop>dateBirthDay</tabstop>
+  <tabstop>BtnPosition</tabstop>
+  <tabstop>BtnSave</tabstop>
+  <tabstop>BtnUpdate</tabstop>
+  <tabstop>BtnDelete</tabstop>
+  <tabstop>textSearch</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>BtnClearFilters</tabstop>
+  <tabstop>BtnFilters</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

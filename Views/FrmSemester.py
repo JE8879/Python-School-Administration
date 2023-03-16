@@ -1,4 +1,5 @@
 import sys
+from PyQt5.QtCore import QEvent
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from Models.SemesterModel import SemesterModel
 from . Utils.Format import FormatComponents
@@ -21,6 +22,10 @@ class ViewSemester(QtWidgets.QWidget):
 
         self.isUpdate = False
         self.fieldValue = ''
+
+        # Create Objects
+        self.instanceFormat = FormatComponents()
+        self.instanceSemester = SemesterModel()
 
         # Create Fonts
         self.fontQLineEdit =  QtGui.QFont()
@@ -50,6 +55,10 @@ class ViewSemester(QtWidgets.QWidget):
 
         self.DteEnd = self.findChild(QtWidgets.QDateEdit, 'DteEnd')
         self.DteEnd.setStyleSheet(self.globalStyles)
+
+        self.CboStatus = self.findChild(QtWidgets.QComboBox, 'CboStatus')
+        self.CboStatus.setFont(self.fontQLineEdit)
+        # self.CboStatus.setStyleSheet(self.globalStyles)
 
         # ------------------------------QLabels------------------------------ #
         self.LblProfession = self.findChild(QtWidgets.QLabel, 'LblProfession')
@@ -95,10 +104,7 @@ class ViewSemester(QtWidgets.QWidget):
 
         # ------------------------------QTableWidget------------------------------ #
         self.TableSemesters = self.findChild(QtWidgets.QTableWidget, 'TableSemesters')
-
-        # Create Objects
-        self.instanceFormat = FormatComponents()
-        self.instanceSemester = SemesterModel()
+        # self.TableSemesters.leaveEvent = self.handle_leave_event
 
         # Load QDates
         self.InitQDates()
@@ -111,7 +117,7 @@ class ViewSemester(QtWidgets.QWidget):
 
     def SaveSemester(self):
         # Get data from inputs
-        self.semesterData = self.textSemesterName.text(), self.textSchoolYear.text(),self.DteStart.dateTime().toString('yyyy-MM-dd'),self.DteEnd.dateTime().toString('yyyy-MM-dd'),self.LblProfession.text()[0:1]
+        self.semesterData = self.textSemesterName.text(), self.textSchoolYear.text(),self.DteStart.dateTime().toString('yyyy-MM-dd'),self.DteEnd.dateTime().toString('yyyy-MM-dd'), self.CboStatus.currentText(), self.LblProfession.text()[0:1]
 
         # Covert to list
         self.listSemesterData = list(self.semesterData)
@@ -205,6 +211,12 @@ class ViewSemester(QtWidgets.QWidget):
     def ClearItems(self):
         self.textSemesterName.setText('')
         self.textSchoolYear.setText('')
+        self.LblProfession.setText('')
+
+    # def handle_leave_event(self, event):
+    #    if(event.type() == QEvent.Leave):
+    #        self.TableSemesters.clearSelection()
+    #        self.TableSemesters.clearFocus()
 
 if __name__ == '__main__':
     

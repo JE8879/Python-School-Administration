@@ -3,7 +3,12 @@
     color: white;
     border-width: 1px;
     border-style: solid;
-    border-color: transparent transparent rgb(209, 242, 235)  transparent;
+    border-color: transparent transparent rgb(52, 152, 219)  transparent;
+}
+
+.QTextEdit {
+    border: 1px solid rgb(52, 152, 219) ;
+    color: white;
 }
 
 .QPushButton{
@@ -24,15 +29,46 @@
     background-color:rgb(118, 215, 196);
 }
 
+.QToolButton {
+    border: 1px solid transparent;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    background-color:rgb(52,73,94);
+    padding-left: 10px;    
+}
+
+.QToolButton:hover {
+    background-color:rgb(163, 228, 215);
+    /* color:black; */
+}
+
 .QComboBox{
     color: white;
     border-width: 1px;
     border-style: solid;
-    border-color: transparent transparent rgb(209, 242, 235)  transparent;
+    border-color: transparent transparent rgb(52, 152, 219)  transparent;
+}
+
+.QComboBox  QAbstractItemView {
+    background-color: rgb(52, 152, 219);
+}
+
+.QToolButton::menu-button {
+    border: none;
+    background-color: black;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    /* 16px width + 4px for border = 20px allocated above */
+    width: 16px;
 }
 
 .QGroupBox{
     border: .5px solid rgb(130, 135, 144);
+}
+
+.QGroupBox:title {
+    color: white;
 }
 
 .QHeaderView::section{
@@ -47,7 +83,7 @@
 }
 
 .QLabel{
-    color:rgb(174, 182, 191);
+    color:#aeb6bf;
 }
 
 .QLabel#lblGroupID{
@@ -59,6 +95,7 @@
 }
 
 .QLabel#LblMessage {
+    
     color: black;
     font-weight: bold;
     border-radius: 10px;
@@ -77,7 +114,7 @@
     color: white;
     border-width: 1px;
     border-style: solid;
-    border-color: transparent transparent rgb(209, 242, 235)  transparent;
+    border-color: transparent transparent rgb(52, 152, 219)  transparent;
 }
 
 .QRadioButton{
@@ -107,4 +144,16 @@
 
 .QMenuBar::item:selected {
     background: rgb(40, 116, 166);
+}
+
+.QMenu {
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: rgb(93, 109, 126);
+}
+
+.QMenu::item:selected {
+    border-color: darkblue;background: rgba(27, 79, 114, 150);
+    color: white;
 }
