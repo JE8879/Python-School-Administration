@@ -3,7 +3,7 @@ import psycopg2
 class Connection:
 
     def ExecuteQuery(self,sQuery,param=[]):
-        connection = psycopg2.connect(database='SysSchoolDatabase', 
+        connection = psycopg2.connect(database='sysschooldatabase', 
                                     user='postgres',
                                     password='hacker122')
     
@@ -13,7 +13,7 @@ class Connection:
             cursor.execute(sQuery,(param))
 
     def ExecuteReader(self,sQuery,param=[]):
-        connection = psycopg2.connect(database='SysSchoolDatabase', 
+        connection = psycopg2.connect(database='sysschooldatabase', 
                                     user='postgres',
                                     password='hacker122')
         

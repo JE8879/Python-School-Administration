@@ -26,7 +26,6 @@ class FormatComponents:
 
         self.styleError = """
             .QLabel#LblMessage {
-                color: white;
                 font-weight: bold;
                 border-radius: 10px;
                 background-color: rgb(205, 97, 85);
@@ -35,7 +34,6 @@ class FormatComponents:
 
         self.styleSuccesfull = """
             .QLabel#LblMessage {
-                color: black;
                 font-weight: bold;
                 border-radius: 10px;
                 background-color: rgb(46, 204, 113);
@@ -43,54 +41,59 @@ class FormatComponents:
         """
 
     def FormatQTableWidget(self, QTableWidget, numCols, lstData, headerLabels, typeData = None):
-       
-        numRows = len(lstData)
 
-        QTableWidget.setColumnCount(numCols)
-        QTableWidget.setRowCount(numRows)
+        try:
+            numRows = len(lstData)
 
-        QTableWidget.setHorizontalHeaderLabels(headerLabels)
-        QTableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
-        QTableWidget.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-        QTableWidget.setSelectionMode(QtWidgets.QTableWidget.SingleSelection)
-        QTableWidget.setStyleSheet(self.globalStyles)
-        
-        QTableWidget.horizontalHeader().setStyleSheet(self.globalStyles)
-        QTableWidget.horizontalHeader().setFont(self.fontQLabel)
+            QTableWidget.setColumnCount(numCols)
+            QTableWidget.setRowCount(numRows)
 
-        QTableWidget.verticalHeader().hide()
-        QTableWidget.setShowGrid(False)
-
-
-        if(typeData == 1):
-            for row in range(numRows):
-                for column in range(numCols):
-                    # QTableWidget.setItem(row,column,QtWidgets.QTableWidgetItem(str(lstData[row][column])))
-
-                    newRow = QtWidgets.QTableWidgetItem(str(lstData[row][column]))
-                    # newRow.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-                    # newRow.setCheckState(QtCore.Qt.Unchecked)
-
-                    QTableWidget.setItem(row,column, newRow)
-                    QTableWidget.item(row,column).setFont(self.fontQLineEdit)
-                    QTableWidget.horizontalHeader().setSectionResizeMode(column,QtWidgets.QHeaderView.ResizeToContents)
-                    
-                    if(row %2 == 0):
-                        QTableWidget.item(row,column).setBackground(QtGui.QColor(33, 47, 61))
-                    else:
-                        QTableWidget.item(row,column).setBackground(QtGui.QColor(44, 62, 80))
+            QTableWidget.setHorizontalHeaderLabels(headerLabels)
+            QTableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+            QTableWidget.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
+            QTableWidget.setSelectionMode(QtWidgets.QTableWidget.SingleSelection)
+            QTableWidget.setStyleSheet(self.globalStyles)
             
-            QTableWidget.clearSelection()
+            QTableWidget.horizontalHeader().setStyleSheet(self.globalStyles)
+            QTableWidget.horizontalHeader().setFont(self.fontQLabel)
 
-        if(typeData == 2):
-            for row, item_list in enumerate(lstData):
-                for col, key in enumerate(item_list):
-                    newItem = QtWidgets.QTableWidgetItem(str(item_list[key]))
-                    QTableWidget.setItem(row, col, newItem)
-                    QTableWidget.item(row,col).setFont(self.fontQLineEdit)
-                    QTableWidget.horizontalHeader().setSectionResizeMode(col,QtWidgets.QHeaderView.ResizeToContents)
-            
-            QTableWidget.clearSelection()
+            QTableWidget.verticalHeader().hide()
+            QTableWidget.setShowGrid(False)
+
+
+            if(typeData == 1):
+                for row in range(numRows):
+                    for column in range(numCols):
+                        # QTableWidget.setItem(row,column,QtWidgets.QTableWidgetItem(str(lstData[row][column])))
+
+                        newRow = QtWidgets.QTableWidgetItem(str(lstData[row][column]))
+                        # newRow.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                        # newRow.setCheckState(QtCore.Qt.Unchecked)
+
+                        QTableWidget.setItem(row,column, newRow)
+                        QTableWidget.item(row,column).setFont(self.fontQLineEdit)
+                        QTableWidget.horizontalHeader().setSectionResizeMode(column,QtWidgets.QHeaderView.ResizeToContents)
+                        QTableWidget.verticalHeader().setSectionResizeMode(row,QtWidgets.QHeaderView.ResizeToContents)
+                        
+                        if(row %2 == 0):
+                            QTableWidget.item(row,column).setBackground(QtGui.QColor(33, 47, 61))
+                        else:
+                            QTableWidget.item(row,column).setBackground(QtGui.QColor(44, 62, 80))
+                
+                QTableWidget.clearSelection()
+
+            if(typeData == 2):
+                for row, item_list in enumerate(lstData):
+                    for col, key in enumerate(item_list):
+                        newItem = QtWidgets.QTableWidgetItem(str(item_list[key]))
+                        QTableWidget.setItem(row, col, newItem)
+                        QTableWidget.item(row,col).setFont(self.fontQLineEdit)
+                        QTableWidget.horizontalHeader().setSectionResizeMode(col,QtWidgets.QHeaderView.ResizeToContents)
+                        QTableWidget.verticalHeader().setSectionResizeMode(row,QtWidgets.QHeaderView.ResizeToContents)
+                
+                QTableWidget.clearSelection()
+        except(Exception):
+            return
     
     def ShowMessageLabel(self, QLabel, message, typeMessage):
         if(typeMessage == 'error'):

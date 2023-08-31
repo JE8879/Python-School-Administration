@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from Models.UserModel import UserModel
-from . FrmGeneric import GenericForm
+from . FrmGeneric import ViewGeneric
 from . Utils.Format import FormatComponents
 from . FrmFilter import ViewFilter
 
@@ -12,11 +12,11 @@ PROJECT_ROOT = os.path.abspath(os.path.join(
 sys.path.append(PROJECT_ROOT)
 
 
-class ManageUser(QtWidgets.QWidget):
+class ViewUser(QtWidgets.QWidget):
     # Constructor
     def __init__(self):
         # Find components and assign properties
-        super(ManageUser, self).__init__()
+        super(ViewUser, self).__init__()
 
         # Load Template-UI-File
         uic.loadUi('Views/Templates/FrmUserLogs.ui',self)
@@ -85,6 +85,7 @@ class ManageUser(QtWidgets.QWidget):
         self.LblPosition.setFont(self.fontQLineEdit)
 
         self.LblMessage = self.findChild(QtWidgets.QLabel, 'LblMessage')
+        self.LblMessage.setStyleSheet(self.globalStyles)
         self.LblMessage.hide()
 
         #--------------------- Search Buttons ---------------------#
@@ -123,7 +124,15 @@ class ManageUser(QtWidgets.QWidget):
         self.instanceFormat = FormatComponents()
         self.instanceUserModel = UserModel()
 
-        self.lstHeaderLabels = ('User ID', 'First Name', 'Last Name', 'Address', 'Gender', 'Email', 'Phone', 'BirthDay', 'Position ID')
+        self.lstHeaderLabels = ('User ID', 
+                                'First Name', 
+                                'Last Name', 
+                                'Address', 
+                                'Gender', 
+                                'Email', 
+                                'Phone', 
+                                'BirthDay', 
+                                'Position ID')
 
         self.fieldValue = ''
 
@@ -135,15 +144,19 @@ class ManageUser(QtWidgets.QWidget):
         self.instanceFormat.FormatQTableWidget(self.TableUserData, 9, self.instanceUserModel.GetAll(), self.lstHeaderLabels, 1)
 
     def SaveUser(self):
-        # Get Data from QLineEdtits
-        self.DataUser = self.textFirstName.text(), self.textLastName.text(), self.textAddress.text(), self.CboGender.currentText(), self.textEmail.text(),  self.textPhone.text(), self.dateBirthDay.dateTime().toString('yyyy-MM-dd'), self.LblPosition.text()[0:2]
-
         # Create new list
-        self.lstUser = list(self.DataUser)
+        self.objectList = [self.textFirstName.text(),
+                           self.textLastName.text(),
+                           self.textAddress.text(),
+                           self.CboGender.currentText(),
+                           self.textEmail.text(),
+                           self.textPhone.text(),
+                           self.dateBirthDay.dateTime().toString('yyyy-MM-dd'),
+                           self.LblPosition.text()[0:2]]
 
         # Validate List
-        for x in range(0,len(self.lstUser)):
-            if(len(str(self.lstUser[x])) == 0):
+        for x in range(0,len(self.objectList)):
+            if(len(str(self.objectList[x])) == 0):
                 self.instanceFormat.ShowMessageLabel(self.LblMessage,'Please complete all fields', 'error')
                 return
         
@@ -153,9 +166,9 @@ class ManageUser(QtWidgets.QWidget):
             # Get User ID
             currentStudentID = int(self.TableUserData.item(row,0).text())
             # Added the id to the list to update
-            self.lstUser.append(currentStudentID)
+            self.objectList.append(currentStudentID)
             # Execute Update
-            message = self.instanceUserModel.Update(self.lstUser)            
+            message = self.instanceUserModel.Update(self.objectList)            
             # Show Message
             self.instanceFormat.ShowMessageLabel(self.LblMessage, message, 'successful')
             # Change Value State
@@ -168,7 +181,7 @@ class ManageUser(QtWidgets.QWidget):
             self.TableUserData.clearSelection()
         else:                      
             # Save User
-            message = self.instanceUserModel.Add(self.lstUser)
+            message = self.instanceUserModel.Add(self.objectList)
             # Show message
             self.instanceFormat.ShowMessageLabel(self.LblMessage, message, 'successful')
             # Clear Information
@@ -215,12 +228,13 @@ class ManageUser(QtWidgets.QWidget):
         self.textPhone.clear()
         self.textEmail.clear()
         self.LblPosition.setText('')
+        self.textFirstName.setFocus()
 
     def LoadComboBox(self):
         self.CboGender.addItems(['Male','Feminine'])
 
     def OpenPositions(self):
-        self.positionWindow = GenericForm("Positions")
+        self.positionWindow = ViewGeneric("Positions")
         self.positionWindow.BtnAcept.clicked.connect(self.GetSelectedPosition)
         self.positionWindow.show()    
     
@@ -269,6 +283,6 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
 
-    window = ManageUser()
+    window = ViewUser()
 
     app.exec_()

@@ -3,16 +3,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from Models.PositionModel import PostionModel
 from Models.StudentModel import StudentModel
 from Models.ProfessionModel import ProfessionModel
+from Models.SectionModel import SectionModel
 from . Utils.Format import FormatComponents
 
-class GenericForm(QtWidgets.QWidget):
+class ViewGeneric(QtWidgets.QWidget):
     # Constructor
     def __init__(self, searchParameter):
         #Properties
         self.searchParameter = searchParameter
 
         # Find components and assing properties
-        super(GenericForm, self).__init__()
+        super(ViewGeneric, self).__init__()
 
         # Load Template UI-File
         uic.loadUi('Views/Templates/GenericForm.ui',self)
@@ -47,6 +48,7 @@ class GenericForm(QtWidgets.QWidget):
         self.GenericTable = self.findChild(QtWidgets.QTableWidget, 'GenericTable')
         self.GenericTable.setStyleSheet(self.globalStyles)
         self.GenericTable.setFocusPolicy(QtCore.Qt.NoFocus)
+        # self.GenericTable.keyPressEvent.connect(self.keyPressEvent)
         
         self.groupBox = self.findChild(QtWidgets.QGroupBox, 'groupBox')
         self.groupBox.setStyleSheet(self.globalStyles)
@@ -59,8 +61,9 @@ class GenericForm(QtWidgets.QWidget):
 
         self.instancePosition = PostionModel()
         self.instanceStudent = StudentModel()
-        self.instaceFormat = FormatComponents()
+        self.instanceFormat = FormatComponents()
         self.instanceProfession = ProfessionModel()
+        self.instanceSection = SectionModel()
 
         self.UploadMatches()
 
@@ -74,8 +77,12 @@ class GenericForm(QtWidgets.QWidget):
             case "Students":
                 self.setWindowTitle("Students")
                 self.textSearch.setPlaceholderText("Search By Student ID")
-                # self.textSearch.textChanged.connect(self.LoadStudents)
                 self.LoadStudents()
+                self.textSearch.textChanged.connect(self.LoadStudents)  
+
+            case "Students-not-Enrollment":
+                self.setWindowTitle("Students to Enroll")
+                self.LoadStudentToEnrollment()
 
             case "Semesters":
                 self.setWindowTitle("Semesters")
@@ -90,28 +97,42 @@ class GenericForm(QtWidgets.QWidget):
                 self.setWindowTitle("Payments")
                 self.LoadPaymentTable()
 
+            case "Sections":
+                self.textSearch.hide()
+                self.setWindowTitle("Sections")
+                self.LoadSectios()
+
     def LoadPositions(self):
         lstHeaderLabels = ('Position ID', 'Position Name')
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instancePosition.GetPositions(), lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 2, self.instancePosition.GetPositions(), lstHeaderLabels, 1)
 
     def LoadStudents(self):
         lstHeaderLabels = ('ID', 'Full Name')
         # result = self.instanceStudent.GetOnlyOneStuent('ID',self.textSearch.text())
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceStudent.GetStudents(), lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceStudent.GetStudentToPay(), lstHeaderLabels, 1)
+
+    def LoadStudentToEnrollment(self):
+        lstHeaderLabels = ('ID', 'Full Name')
+        # result = self.instanceStudent.GetOnlyOneStuent('ID',self.textSearch.text())
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceStudent.GetUserTypeStudent(),lstHeaderLabels, 1)
 
     def LoadSemesters(self):
         lstHeaderLabels = ('ID', 'Semester Name', 'School Year')
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 3, self.instanceStudent.GetSemesters(), lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 3, self.instanceStudent.GetSemesters(), lstHeaderLabels, 1)
+
+    def LoadSectios(self):
+        lstHeaderLabels = ('ID', 'Section Name', 'SemesterName', 'Profession Name')
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 4, self.instanceSection.GetAll(), lstHeaderLabels, 1)
 
     def LoadProfessions(self):
         lstHeaderLabels = ('ID', 'Profession Name')
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceProfession.GetAll(), lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 2, self.instanceProfession.GetAll(), lstHeaderLabels, 1)
 
     def LoadPaymentTable(self):
         lstHeaderLabels = ('Concept Name', 'Amount')
         lstPaymentData = [('Monthly Payment',1000),('Enrollment Payment',3000)]
 
-        self.instaceFormat.FormatQTableWidget(self.GenericTable, 2, lstPaymentData, lstHeaderLabels, 1)
+        self.instanceFormat.FormatQTableWidget(self.GenericTable, 2, lstPaymentData, lstHeaderLabels, 1)
 
     def RetrieveData(self):
         row = self.GenericTable.currentRow()
@@ -130,10 +151,54 @@ class GenericForm(QtWidgets.QWidget):
             # set the checkbox widget as the cell widget for the first column of the row
             self.GenericTable.setCellWidget(row, 0, checkbox)
 
+    def keyPressEvent(self, event):
+        if(event.modifiers() == QtCore.Qt.ControlModifier):
+            self.GenericTable.setSelectionMode(QtWidgets.QTableWidget.MultiSelection)
+        super().keyPressEvent(event)
+
+    def RetrievePayConcept(self):
+        currentRow = self.GenericTable.currentRow()
+        lstAmountValues = list()
+
+        if(currentRow >= 0):
+            selectedRanges = self.GenericTable.selectedRanges()
+
+            if(len(selectedRanges) == 2):
+                firstSelected = selectedRanges[0]
+                secondSelected = selectedRanges[1]
+
+                firstRow = firstSelected.topRow()
+                secondRow = secondSelected.topRow()
+
+                firstAmount = int(self.GenericTable.item(firstRow, 1).text())
+                secondAmount = int(self.GenericTable.item(secondRow, 1).text())
+
+                payConcetpOne = self.GenericTable.item(firstRow, 0).text()
+                payConcetpTwo = self.GenericTable.item(secondRow, 0).text()
+
+                payResume = payConcetpOne
+                payResume += ' & '
+                payResume += payConcetpTwo
+
+                totalAmount = firstAmount + secondAmount
+                
+                lstAmountValues.append(totalAmount)
+                lstAmountValues.append(payResume)
+
+                return lstAmountValues
+            else:
+                payResume = self.GenericTable.item(currentRow, 0).text()
+                totalAmount = int(self.GenericTable.item(currentRow, 1).text())
+
+                lstAmountValues.append(totalAmount)
+                lstAmountValues.append(payResume)
+        
+                return lstAmountValues
+            
 if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
 
-    window = GenericForm()
+    window = ViewGeneric()
 
     app.exec_()

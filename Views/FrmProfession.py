@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtWidgets, QtGui, uic
 from Models.ProfessionModel import ProfessionModel
 from Models.SubjectModel import SubjectModel
 from . Utils.Format import FormatComponents
-from . FrmGeneric import GenericForm
+from . FrmGeneric import ViewGeneric
 
 
 class ViewProfession(QtWidgets.QWidget):
@@ -199,7 +199,7 @@ class ViewProfession(QtWidgets.QWidget):
     
     # region <Create All Methods of Subject
     def OpenGenericSemesterWindow(self):
-        self.semesterWindow = GenericForm('Semesters')
+        self.semesterWindow = ViewGeneric('Semesters')
         self.semesterWindow.BtnAcept.clicked.connect(self.GetSemesterField)
         self.semesterWindow.show()
 

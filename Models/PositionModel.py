@@ -11,3 +11,9 @@ class PostionModel(Connection):
             result = err
         return result
 
+
+
+# if __name__ == '__main__':
+#     objectQuery = PostionModel()
+#     arrObject = objectQuery.GetPositions()
+#     print(arrObject)

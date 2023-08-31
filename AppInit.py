@@ -1,5 +1,5 @@
 import sys
-from Views.FrmMain import MainForm
+from Views.FrmMain import ViewMain
 from PyQt5 import QtCore, QtWidgets, QtGui, uic
 
 class FrmLogin(QtWidgets.QWidget):
@@ -51,7 +51,7 @@ class FrmLogin(QtWidgets.QWidget):
 
     def OpenDashBoard(self):
         self.uiWindow = QtWidgets.QWidget()
-        self.instanceWindow = MainForm()
+        self.instanceWindow = ViewMain()
         
 
 if __name__ == '__main__':

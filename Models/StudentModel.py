@@ -5,7 +5,7 @@ class StudentModel(Connection):
 
     def Add(self,parameters):
         try:
-            sQuery = "INSERT INTO Student(userid,schoolenrollment,studyshift,active) VALUES(%s,%s,%s,%s)"
+            sQuery = "INSERT INTO Student(userid,schoolenrollment,enrollmentdate,studyshift,active,sectionid) VALUES(%s,%s,%s,%s,%s,%s)"
             self.ExecuteQuery(sQuery,parameters)
             result = "Record inserted successfully"        
         except(Exception, psycopg2.Error) as err:
@@ -30,7 +30,7 @@ class StudentModel(Connection):
             result = str(err)
         return result
 
-    def GetAll(self):
+    def GetStudentData(self):
         try:
             sQuery = """SELECT Student.userid, UserData.firstname || ' ' || UserData.lastname as FullName, Student.Schoolenrollment, Student.studyshift, Student.active
                         FROM Student
@@ -42,19 +42,30 @@ class StudentModel(Connection):
             result = str(err)
         return result
     
-    def GetStudents(self):
+    def GetUserTypeStudent(self):
         try:
             sQuery = """
                 SELECT UserData.UserID, UserData.Firstname || ' ' || UserData.LastName as FullName
                 FROM UserData
                 LEFT JOIN Student ON Student.UserId = Userdata.UserId
-                WHERE Student.UserId IS NULL AND UserData.PositionId=2;
+                WHERE Student.UserId IS NULL AND UserData.PositionId=1;
                 """
             result = self.ExecuteReader(sQuery)
         except(Exception, psycopg2.Error) as err:
             result = str(err)
         return result
     
+    def GetStudentToPay(self):
+        try:
+            sQuery = """
+                    SELECT Student.UserID, UserData.FirstName || ' ' || UserData.LastName as FullName
+                    FROM Student
+                    INNER JOIN UserData ON UserData.UserID = Student.UserID;"""
+            result = self.ExecuteReader(sQuery)
+        except(Exception, psycopg2.Error) as err:
+            result = str(err)
+        return result
+
     def GetSemesters(self):
         try:
             sQuery = """SELECT SemesterID, SemesterName || ' - ' || ProfessionName AS Semester, SchoolYear
@@ -70,7 +81,7 @@ class StudentModel(Connection):
         # crate keys, the field null is the enrollment but i don´t use that field then i ignore
         # The field null is not inside of list of parameters to search
         keys = ['ID','fullname','null','studyShift','active']
-        lstValues = self.GetAll()
+        lstValues = self.GetStudentData()
 
         dictionaryList = []
 

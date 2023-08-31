@@ -44,39 +44,15 @@ class UserModel(Connection):
         dictionaryList = []
         auxiliaryList = []
 
-        if(len(lstValues)) > 0:
-            print('Desde los valores')
-            # Crea una lista de diccionarios
-            dictionaryList = [dict(zip(keys, item)) for item in lstValues]
+        lstValues = self.GetAll()
+        # Crea una lista de diccionarios
+        dictionaryList = [dict(zip(keys, item)) for item in lstValues]
 
-            try:
-                auxiliaryList = [element for element in dictionaryList if element[key] == value]
-            except:
+        try:
+            auxiliaryList = [element for element in dictionaryList if element[key] == value]
+        except:
                 return
-            return auxiliaryList
-        else:
-            lstValues = self.GetAll()
-            print('Desde la Base de Datos')
-            # Crea una lista de diccionarios
-            dictionaryList = [dict(zip(keys, item)) for item in lstValues]
-
-            try:
-                auxiliaryList = [element for element in dictionaryList if element[key] == value]
-            except:
-                return
-            return auxiliaryList
-            
-
-
-    def CustomSearch(self, key, value, update=None):
-        keys = ['ID', 'fname', 'lname', 'address', 'gender', 'email', 'phone', 'birthday', 'positionid']
-
-        lstValues = []
-
-        if(lstValues):
-            print(lstValues)
-        else:
-            lstValues = self.GetAll()
+        return auxiliaryList
 
 
 # if __name__ == '__main__':
