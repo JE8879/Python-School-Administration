@@ -3,9 +3,9 @@ import psycopg2
 class Connection:
 
     def ExecuteQuery(self,sQuery,param=[]):
-        connection = psycopg2.connect(database='sysschooldatabase', 
+        connection = psycopg2.connect(database='Sys-SchoolDatabase', 
                                     user='postgres',
-                                    password='hacker122')
+                                    password='root')
     
         cursor = connection.cursor()
         with connection:
@@ -13,9 +13,9 @@ class Connection:
             cursor.execute(sQuery,(param))
 
     def ExecuteReader(self,sQuery,param=[]):
-        connection = psycopg2.connect(database='sysschooldatabase', 
+        connection = psycopg2.connect(database='Sys-SchoolDatabase', 
                                     user='postgres',
-                                    password='hacker122')
+                                    password='root')
         
         cursor = connection.cursor()
         with connection:
